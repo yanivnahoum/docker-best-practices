@@ -1,0 +1,9 @@
+FROM maven:3.6.3-jdk-11 AS builder
+WORKDIR /usr/src/app
+COPY src ./src
+COPY pom.xml ./
+RUN mvn clean install
+
+FROM openjdk:11-jre
+COPY --from=builder /usr/src/app/target/*.jar application.jar
+ENTRYPOINT ["java", "-jar", "/application.jar"]

@@ -1,0 +1,4 @@
+FROM adoptopenjdk/openjdk11:alpine
+COPY target/*.jar application.jar
+ENV JAVA_OPTS="-XX:MaxRAMPercentage=50 -XX:+UseG1GC"
+ENTRYPOINT java ${JAVA_OPTS} -jar /application.jar

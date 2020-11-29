@@ -1,0 +1,4 @@
+FROM adoptopenjdk/openjdk11:alpine-jre
+COPY target/*.jar application.jar
+COPY docker/run.sh ./
+ENTRYPOINT ./run.sh

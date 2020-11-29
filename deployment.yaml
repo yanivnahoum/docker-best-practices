@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: demo
+  name: demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo
+  strategy: { }
+  template:
+    metadata:
+      labels:
+        app: demo
+    spec:
+      securityContext:
+        runAsNonRoot: true
+      volumes:
+        - name: config-volume
+          configMap:
+            name: external-users
+      containers:
+        - name: spring-boot-mvc-demo
+          image: spring-boot-mvc-demo:0.0.7
+          ports:
+            - name: http-port
+              containerPort: 8088
+          args:
+            - "--spring.profiles.active=$(ACTIVE_PROFILE_SECRET)"
+            - "--server.port=$(PORT)"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /application/config
+          env:
+            - name: JAVA_TOOL_OPTIONS
+              value: "-XX:MaxRAMPercentage=60 -XX:MaxMetaspaceSize=64M -XX:MaxDirectMemorySize=10M -XX:+HeapDumpOnOutOfMemoryError -XX:+UseG1GC -XX:+UseStringDeduplication"
+            - name: APP_CONFIG_DIR
+              value: /application/config
+            - name: PORT
+              value: "8088"
+            - name: ACTIVE_PROFILE
+              valueFrom:
+                configMapKeyRef:
+                  name: demo-config
+                  key: profile
+            - name: ACTIVE_PROFILE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: demo-secret-config
+                  key: profile
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "2"
+            limits:
+              memory: "500Mi"
+              cpu: "4"
+          livenessProbe:
+            httpGet:
+              path: demo/actuator/health/liveness
+              port: http-port
+            initialDelaySeconds: 5
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: demo/actuator/health/readiness
+              port: http-port
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          imagePullPolicy: Never
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: demo
+  name: demo
+spec:
+  ports:
+    - name: 8080-8088
+      port: 8080
+      protocol: TCP
+      targetPort: 8088
+  selector:
+    app: demo
+  type: NodePort
+
+
+# k delete deploy demo &&  k delete svc demo && k apply -f deployment.yaml
+# configmaps & secrets owned by root with 644
+# k create configmap demo-config --from-literal=profile=prod
+# k create configmap external-users --from-file src/main/resources/external.yml
+# k create secret generic demo-secret-config --from-literal=profile=secret
+#  k exec -it demo-5ddcb456d5-9fnpd -- sh
+
+# k get svc demo
+# NAME   TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+# demo   NodePort   10.104.137.216   <none>        8080:30287/TCP   2m59s
+# Endpoint will be accessible @ http://localhost:30287

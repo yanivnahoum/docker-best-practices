@@ -1,0 +1,11 @@
+FROM adoptopenjdk/openjdk11:alpine-jre
+COPY target/*.jar application.jar
+
+ARG USER_NAME=demouser
+ARG GROUP_NAME=demogroup
+RUN addgroup -g 1001 -S $GROUP_NAME
+RUN adduser -u 1000 -S $USER_NAME -G $GROUP_NAME
+RUN chown $USER_NAME:$GROUP_NAME application.jar
+USER $USER_NAME
+
+ENTRYPOINT ["java", "-jar", "/application.jar"]
