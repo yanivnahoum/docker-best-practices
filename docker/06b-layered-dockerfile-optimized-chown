@@ -9,7 +9,7 @@ ARG USER_NAME=demouser
 ARG GROUP_NAME=demogroup
 RUN addgroup -g 1001 -S $GROUP_NAME \
     && adduser -u 1000 -S $USER_NAME -G $GROUP_NAME \
-    && chown -R $USER_NAME:$GROUP_NAME ./
+    && chown $USER_NAME:$GROUP_NAME ./
 USER $USER_NAME
 
 COPY --from=builder --chown=$USER_NAME:$GROUP_NAME application/dependencies/ ./
@@ -17,4 +17,4 @@ COPY --from=builder --chown=$USER_NAME:$GROUP_NAME application/spring-boot-loade
 COPY --from=builder --chown=$USER_NAME:$GROUP_NAME application/snapshot-dependencies/ ./
 COPY --from=builder --chown=$USER_NAME:$GROUP_NAME application/application/ ./
 
-ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
+ENTRYPOINT ["java", "org.springframework.booconfigt.loader.JarLauncher"]
