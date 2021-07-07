@@ -28,14 +28,15 @@ spec:
             - name: http-port
               containerPort: 8088
           args:
-            - "--spring.profiles.active=$(ACTIVE_PROFILE_SECRET)"
+            - "--spring.profiles.active=$(ACTIVE_PROFILE)"
             - "--server.port=$(PORT)"
           volumeMounts:
             - name: config-volume
               mountPath: /application/config
           env:
             - name: JAVA_TOOL_OPTIONS
-              value: "-XX:MaxRAMPercentage=60 -XX:MaxMetaspaceSize=64M -XX:MaxDirectMemorySize=10M -XX:+HeapDumpOnOutOfMemoryError -XX:+UseG1GC -XX:+UseStringDeduplication"
+              value: "-XX:MaxRAMPercentage=60 -XX:MaxMetaspaceSize=64M -XX:MaxDirectMemorySize=10M
+              -XX:+HeapDumpOnOutOfMemoryError -XX:+UseG1GC -XX:+UseStringDeduplication"
             - name: APP_CONFIG_DIR
               value: /application/config
             - name: PORT
