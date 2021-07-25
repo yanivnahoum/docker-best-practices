@@ -37,9 +37,9 @@
     * clean up first: `docker rmi -f $(docker images 'demo*' -q) && docker image prune`
     * `docker build -t demo:6 -f docker/06-layered-dockerfile .`
     * Edit DemoApplication & `./mvnw clean install`
-    * `docker build -t demo:6 -f docker/06-layered-dockerfile` .  => steps 3 & 13 will **not** be taken from the cache.
+    * `docker build -t demo:6 -f docker/06-layered-dockerfile` .  => steps 3, 4 & 7 will **not** be taken from the cache.
     * You can further reduce the image size by changing owner of directories **before** copying in your files, 
-    and then copying your files to the image **while specifying the correct owner** ([example](/docker/06b-layered-dockerfile-optimized-chown)):
+    and then copying your files to the image **while specifying the correct owner**:
 ```bash
 COPY --from=builder --chown=$USER_NAME:$GROUP_NAME application/dependencies/ ./
 ```
