@@ -52,7 +52,7 @@ COPY --from=builder --chown=$USER_NAME:$GROUP_NAME application/dependencies/ ./
     * Then add `exec` in run.sh and do the whole thing again.
 
 8. Configure your JVM
-    * Run with 1G and 2G - show 25% default until 512MB heap, and SerialGC until 2G total ram.
+    * Run with 1G and 2G - show 25% default until (and including) 512MB heap, and SerialGC until 2G total ram.
     * Show serial with 2G and 1 cpu
 ```bash
 docker run --rm --memory 2G --cpus 2 adoptopenjdk/openjdk11:alpine \
@@ -61,7 +61,7 @@ docker run --rm --memory 2G --cpus 2 adoptopenjdk/openjdk11:alpine \
 docker run --rm --memory 1G --cpus 2 adoptopenjdk/openjdk11:alpine \
     sh -c "java -XX:+PrintFlagsFinal -version | grep -E ' MaxHeapSize|MaxRAMPercentage|UseG1GC|UseSerialGC'"
     
-docker run --rm --memory 512M --cpus 2 adoptopenjdk/openjdk11:alpine \
+docker run --rm --memory 256M --cpus 2 adoptopenjdk/openjdk11:alpine \
     sh -c "java -XX:+PrintFlagsFinal -version | grep -E ' MaxHeapSize|MaxRAMPercentage|UseG1GC|UseSerialGC'"
  
 docker run --rm --memory 1G --cpus 2 -it adoptopenjdk/openjdk11:alpine
