@@ -34,7 +34,7 @@
 
 6. Leverage build cache
     * ADD and COPY: checksum. The rest (RUN): the command string itself is used to find a match.
-    * clean up first: `docker rmi -f $(docker images 'demo*' -q) && docker image prune`
+    * clean up first: `docker rmi -f $(docker images 'demo*' -q) && docker builder prune`
     * `docker build -t demo:6 -f docker/06-layered-dockerfile .`
     * Edit DemoApplication & `./mvnw clean install`
     * `docker build -t demo:6 -f docker/06-layered-dockerfile` .  => steps 3, 4 & 7 will **not** be taken from the cache.
