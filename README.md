@@ -55,16 +55,16 @@ COPY --from=builder --chown=$USER_NAME:$GROUP_NAME application/dependencies/ ./
     * Run with 1G and 2G - show 25% default until (and including) 512MB heap, and SerialGC until 2G total ram.
     * Show serial with 2G and 1 cpu
 ```bash
-docker run --rm --memory 2G --cpus 2 adoptopenjdk/openjdk11:alpine \
+docker run --rm --memory 2G --cpus 2 eclipse-temurin:11-jdk-alpine \
     sh -c "java -XX:+PrintFlagsFinal -version | grep -E ' MaxHeapSize|MaxRAMPercentage|UseG1GC|UseSerialGC'"
 
-docker run --rm --memory 1G --cpus 2 adoptopenjdk/openjdk11:alpine \
+docker run --rm --memory 1G --cpus 2 eclipse-temurin:11-jdk-alpine \
     sh -c "java -XX:+PrintFlagsFinal -version | grep -E ' MaxHeapSize|MaxRAMPercentage|UseG1GC|UseSerialGC'"
     
-docker run --rm --memory 256M --cpus 2 adoptopenjdk/openjdk11:alpine \
+docker run --rm --memory 256M --cpus 2 eclipse-temurin:11-jdk-alpine \
     sh -c "java -XX:+PrintFlagsFinal -version | grep -E ' MaxHeapSize|MaxRAMPercentage|UseG1GC|UseSerialGC'"
  
-docker run --rm --memory 1G --cpus 2 -it adoptopenjdk/openjdk11:alpine
+docker run --rm --memory 1G --cpus 2 -it eclipse-temurin:11-jdk-alpine
 >  Runtime.getRuntime().availableProcessors()
 ```
 * We can specify the jvm options by incorporating a custom ENV in our dockerfile
